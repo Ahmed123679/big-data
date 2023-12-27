@@ -4,12 +4,14 @@ import sys
 all_words = set()
 all_files = set()
 files = []
+searchWords = []
 input = sys.stdin.readlines()
+tab = '    '
 def reduce():
 
     for line in input:
-        if len(line.split("\t")) == 2:
-            word,filename = line.split("\t")
+        if len(line.split(tab)) == 2:
+            word,filename = line.split(tab)
             all_words.add(word) # gathering all words
             all_files.add(filename[:-1]) # gathering all file names
         else:
@@ -19,16 +21,19 @@ def reduce():
     global files
     files = list(all_files)
     files.sort()
+    global searchWords
+    searchWords = list(all_words)
+    searchWords.sort()
 
     hashTable = pd.DataFrame(np.zeros((len(all_words),len(all_files)),dtype='int16'),
-                             index = list(all_words),columns = files)
+                             index = searchWords,columns = files)
     
     # print(hashTable)
 
     # update counts of the words in hash table
     for line in input:
-        if len(line.split("\t")) == 2:
-            word,filename = line.split("\t")
+        if len(line.split(tab)) == 2:
+            word,filename = line.split(tab)
             hashTable.loc[word,filename[:-1]] += 1
         else:
             continue
@@ -36,7 +41,7 @@ def reduce():
 
     # files that contain that word
     print("============== word found in [files]===============\n")
-    for word in all_words:
+    for word in searchWords:
         matched_files = []
         for file in files:
             if(hashTable.loc[word,file] != 0):
@@ -48,7 +53,7 @@ def reduce():
     print("============== file contains [words]===============\n")
     for file in files:
         words = []
-        for word in all_words:
+        for word in searchWords:
             if(hashTable.loc[word,file] != 0):
                 words.append(word)
             else:
@@ -57,8 +62,8 @@ def reduce():
     
     # word and word
     print("============== word AND word in [files]===============\n")
-    for firstword in all_words:
-        for secondword in all_words:
+    for firstword in searchWords:
+        for secondword in searchWords:
             matched_files = []
             if(firstword == secondword):
                 continue
@@ -73,8 +78,8 @@ def reduce():
     
     # word OR word
     print("============== word OR word in [files]===============\n")
-    for firstword in all_words:
-        for secondword in all_words:
+    for firstword in searchWords:
+        for secondword in searchWords:
             matched_files = []
             if(firstword == secondword):
                 continue
