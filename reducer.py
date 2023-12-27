@@ -13,7 +13,7 @@ def reduce():
         if len(line.split(tab)) == 2:
             word,filename = line.split(tab)
             all_words.add(word) # gathering all words
-            all_files.add(filename[:-1]) # gathering all file names
+            all_files.add(filename.strip()) # gathering all file names
         else:
             continue
 
@@ -34,7 +34,7 @@ def reduce():
     for line in input:
         if len(line.split(tab)) == 2:
             word,filename = line.split(tab)
-            hashTable.loc[word,filename[:-1]] += 1
+            hashTable.loc[word,filename.strip()] += 1
         else:
             continue
     # print(hashTable)
